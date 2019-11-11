@@ -2,7 +2,7 @@ var mysql_connection = {
     host: 'localhost',
     user: 'root',
     password: '',
-    database: 'vote_database'
+    database: 'se_gpt'
 }
 
 var page_size = 20;

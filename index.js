@@ -62,6 +62,10 @@ app.get('/', function (req, res, next) {
 //log to console to let us know it's working
 console.log('BearHunt, Inc. API server started on: ' + port);
 
+// app.post('/api/login' , model)
+// app.post('/api/logout' , model.event.event.get_list)
+// app.post('/api/logout' , model.event.event.get_list)
+
 app.post('/api/event' , model.event.event.get_list)
 app.get('/api/event/:id' , model.event.event.get_data)
 app.put('/api/event' , model.event.event.save_data)

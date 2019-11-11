@@ -2,12 +2,12 @@ const config = require('../config/config.js')
 const mysql = require('mysql')
 const connection = mysql.createConnection(config.mysql_connection)
 
-var event = {
+var user = {
     get_list: (req, res) => {
-        console.log('event : get_list');
+        console.log('user : get_list');
 
-        let sql = ` SELECT event_id, project_id, achievement_id, reward_id, name, score
-                    FROM event
+        let sql = ` SELECT user_id, username, name, role_type_id, project_id
+                    FROM user
                     WHERE (? IS NULL OR LOWER(name) LIKE LOWER(CONCAT('%', ? ,'%')))
                     LIMIT ?, ?`;
 
@@ -27,7 +27,7 @@ var event = {
             var apiResult = {}
 
             apiResult.meta = {
-                table: "event",
+                table: "user",
                 total_entries: resultJson.length,
                 page_total: Math.ceil(resultJson.length / config.page_size),
                 page_no: page_no
@@ -38,14 +38,14 @@ var event = {
         });
     },
     get_data: (req, res) => {
-        console.log('event : get_data');
+        console.log('user : get_data');
 
-        let sql = ` SELECT event_id, project_id, achievement_id, reward_id, name, score
-                    FROM event
-                    WHERE event_id = ?`;
+        let sql = ` SELECT user_id, username, name, role_type_id, project_id
+                    FROM user
+                    WHERE user_id = ?`;
 
-        let event_id = req.params.id;
-        let data = [event_id]
+        let user_id = req.params.id;
+        let data = [user_id]
 
         connection.query(sql, data, function (err, results, fields) {
             if (err) {
@@ -59,23 +59,22 @@ var event = {
 
     },
     save_data: (req, res) => {
-        console.log('event : save_data');
+        console.log('user : save_data');
 
-        let event_id = typeof req.params.id == 'undefined' ? null : req.params.id;
+        let user_id = typeof req.params.id == 'undefined' ? null : req.params.id;
 
-        if (event_id == null) {
+        if (user_id == null) {
 
-            let sql = ` INSERT INTO event (project_id, achievement_id, reward_id, name, score, note, create_date, create_user_id) 
-                        VALUES (?, ?, ?, ?, ?, ?, NOW(), ?)`;
+            let sql = ` INSERT INTO user (username, password, name, role_type_id, project_id, create_date, create_user_id) 
+                        VALUES (?, ?, ?, ?, ?, NOW(), ?)`;
 
-            let project_id = typeof req.body.project_id == 'undefined' ? null : req.body.project_id;
-            let achievement_id = typeof req.body.achievement_id == 'undefined' ? null : req.body.achievement_id;
-            let reward_id = typeof req.body.reward_id == 'undefined' ? null : req.body.reward_id;
+            let username = req.body.username;
+            let password = req.body.password;
             let name = req.body.name;
-            let score = req.body.score;
-            let note = typeof req.body.note == 'undefined' ? null : req.body.note;
+            let role_type_id = req.body.role_type_id;
+            let project_id = typeof req.body.project_id == 'undefined' ? null : req.body.project_id;
             let create_user_id = req.body.user_id;
-            let data = [project_id, achievement_id, reward_id, name, score, note, create_user_id]
+            let data = [username, password, name, role_type_id, project_id, create_user_id]
 
             connection.query(sql, data, function (err, results, fields) {
                 if (err) {
@@ -84,24 +83,28 @@ var event = {
                     return;
                 }
 
-                res.json({ 'event_id': results.insertId })
+                res.json({ 'user_id': results.insertId })
             });
 
         } else {
 
-            let sql = ` UPDATE event
-                        SET name = ?,
-                            score = ?,
-                            note = ?,
+            let sql = ` UPDATE user
+                        SET username = ?,
+                            password = ?,
+                            name = ?,
+                            role_type_id = ?,
+                            project_id = ?,
                             modify_date = NOW(),
                             modify_user_id = ?
                         WHERE event_id = ?`;
 
+            let username = req.body.username;
+            let password = req.body.password;
             let name = req.body.name;
-            let score = req.body.score;
-            let note = typeof req.body.note == 'undefined' ? null : req.body.note;
+            let role_type_id = req.body.role_type_id;
+            let project_id = typeof req.body.project_id == 'undefined' ? null : req.body.project_id;
             let modify_user_id = req.body.user_id;
-            let data = [name, score, note, modify_user_id, event_id]
+            let data = [username, password, name, role_type_id, project_id, modify_user_id, user_id]
 
             //query the DB using prepared statement
             connection.query(sql, data, function (err, results, fields) {
@@ -118,13 +121,13 @@ var event = {
         }
     },
     delete_data: (req, res) => {
-        console.log('event : delete_data');
+        console.log('user : delete_data');
         //sql
-        let sql = ` DELETE FROM event
-                    WHERE event_id = ?`;
+        let sql = ` DELETE FROM user
+                    WHERE user_id = ?`;
 
-        let event_id = req.params.id;
-        let data = [event_id]
+        let user_id = req.params.id;
+        let data = [user_id]
 
         //query the DB using prepared statement
         connection.query(sql, data, function (err, results, fields) {
@@ -139,4 +142,4 @@ var event = {
     }
 }
 
-module.exports.event = event;
+module.exports.user = user;
