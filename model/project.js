@@ -6,7 +6,7 @@ var project = {
     get_list: (req, res) => {
         console.log('project : get_list');
 
-        let sql = ` SELECT project_id, name, methodology, start_date, end_date, note
+        let sql = ` SELECT project_id, name, methodology, start_date, end_date
                     FROM project
                     WHERE (? IS NULL OR LOWER(name) LIKE LOWER(CONCAT('%', ? ,'%')))
                     LIMIT ?, ?`;
@@ -40,7 +40,7 @@ var project = {
     get_data: (req, res) => {
         console.log('project : get_data');
 
-        let sql = ` SELECT project_id, name, methodology, start_date, end_date, note
+        let sql = ` SELECT project_id, name, methodology, start_date, end_date
                     FROM project
                     WHERE project_id = ?`;
 

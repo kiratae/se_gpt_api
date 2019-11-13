@@ -1,5 +1,5 @@
 const event = require('./event.js')
-// const da_log = require('./scrum/da_log.js')
+const project = require('./project')
 
 module.exports.event = event
-// module.exports.da_log = da_log
+module.exports.project = project

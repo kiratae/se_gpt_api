@@ -5,7 +5,7 @@ var mysql_connection = {
     database: 'se_gpt'
 }
 
-var page_size = 20;
+var page_size = 10;
 
 exports.mysql_connection = mysql_connection
 exports.page_size = page_size

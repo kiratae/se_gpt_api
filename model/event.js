@@ -74,8 +74,11 @@ var event = {
             let name = req.body.name;
             let score = req.body.score;
             let note = typeof req.body.note == 'undefined' ? null : req.body.note;
-            let create_user_id = req.body.user_id;
+            let create_user_id = req.body.create_user_id;
             let data = [project_id, achievement_id, reward_id, name, score, note, create_user_id]
+
+            console.log(req.body);
+            console.log(data);
 
             connection.query(sql, data, function (err, results, fields) {
                 if (err) {
@@ -100,7 +103,7 @@ var event = {
             let name = req.body.name;
             let score = req.body.score;
             let note = typeof req.body.note == 'undefined' ? null : req.body.note;
-            let modify_user_id = req.body.user_id;
+            let modify_user_id = req.body.modify_user_id;
             let data = [name, score, note, modify_user_id, event_id]
 
             //query the DB using prepared statement
