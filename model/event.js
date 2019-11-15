@@ -9,7 +9,7 @@ var event = {
         let sql = ` SELECT event_id, project_id, achievement_id, reward_id, name, score
                     FROM event
                     WHERE (? IS NULL OR LOWER(name) LIKE LOWER(CONCAT('%', ? ,'%')))
-                    ORDER BY create_date DESC
+                    ORDER BY modify_date DESC, create_date DESC
                     LIMIT ?, ?;`;
 
         let keyword = typeof req.query.keyword == 'undefined' ? null : req.query.keyword;
