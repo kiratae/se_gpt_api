@@ -9,10 +9,10 @@ var event = {
         let sql = ` SELECT event_id, project_id, achievement_id, reward_id, name, score
                     FROM event
                     WHERE (? IS NULL OR LOWER(name) LIKE LOWER(CONCAT('%', ? ,'%')))
-                    LIMIT ?, ?`;
+                    LIMIT ?, ?;`;
 
-        let page_no = typeof req.body.page_no == 'undefined' ? 0 : parseInt(req.body.page_no);
-        let keyword = typeof req.body.keyword == 'undefined' ? null : req.body.keyword;
+        let keyword = typeof req.query.keyword == 'undefined' ? null : req.query.keyword;
+        let page_no = typeof req.query.page_no == 'undefined' ? 0 : parseInt(req.query.page_no);
         let data = [keyword, keyword, page_no, config.page_size]
 
         connection.query(sql, data, function (err, results, fields) {
@@ -22,19 +22,31 @@ var event = {
                 return;
             }
 
-            var resultJson = JSON.stringify(results);
-            resultJson = JSON.parse(resultJson);
-            var apiResult = {}
+            connection.query('SELECT COUNT(*) as total_entries FROM event;', function (err2, results2) {
+                if (err) {
+                    console.error(err);
+                    res.send('ERROR!!');
+                    return;
+                }
 
-            apiResult.meta = {
-                table: "event",
-                total_entries: resultJson.length,
-                page_total: Math.ceil(resultJson.length / config.page_size),
-                page_no: page_no
-            }
-            apiResult.data = resultJson;
+                var resultJson2 = JSON.stringify(results2);
+                resultJson2 = JSON.parse(resultJson2);
+                var total_entries = resultJson2[0].total_entries;
 
-            res.json(apiResult)
+                var resultJson = JSON.stringify(results);
+                resultJson = JSON.parse(resultJson);
+                var apiResult = {}
+
+                apiResult.meta = {
+                    table: "event",
+                    total_entries: total_entries,
+                    page_total: Math.ceil(total_entries / config.page_size),
+                    page_no: page_no
+                }
+                apiResult.data = resultJson;
+
+                res.json(apiResult)
+            });
         });
     },
     get_data: (req, res) => {

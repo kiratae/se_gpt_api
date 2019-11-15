@@ -67,9 +67,9 @@ console.log('BearHunt, Inc. API server started on: ' + port);
 // app.post('/api/logout' , model.event.event.get_list)
 
 // --- Event ---
-app.post('/api/event' , model.event.event.get_list)
+app.get('/api/event' , model.event.event.get_list)
 app.get('/api/event/:id' , model.event.event.get_data)
-app.put('/api/event' , model.event.event.save_data)
+app.post('/api/event' , model.event.event.save_data)
 app.put('/api/event/:id' , model.event.event.save_data)
 app.delete('/api/event/:id' , model.event.event.delete_data)
 
