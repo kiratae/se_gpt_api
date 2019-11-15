@@ -9,11 +9,14 @@ var event = {
         let sql = ` SELECT event_id, project_id, achievement_id, reward_id, name, score
                     FROM event
                     WHERE (? IS NULL OR LOWER(name) LIKE LOWER(CONCAT('%', ? ,'%')))
+                    ORDER BY create_date DESC
                     LIMIT ?, ?;`;
 
         let keyword = typeof req.query.keyword == 'undefined' ? null : req.query.keyword;
         let page_no = typeof req.query.page_no == 'undefined' ? 0 : parseInt(req.query.page_no);
-        let data = [keyword, keyword, page_no, config.page_size]
+        let itemStart = config.page_size * page_no;
+
+        let data = [keyword, keyword, itemStart, config.page_size]
 
         connection.query(sql, data, function (err, results, fields) {
             if (err) {
